@@ -34,7 +34,11 @@ In the simulation, the rocket's acceleration results from the combined forces of
 
 The gravitational force between two masses is given by Newton's law of universal gravitation:
 
-$F_g = G \frac{m_1 m_2}{r^2}$
+$$
+F_g = G \frac{m_1 m_2}{r^2}
+$$
+
+Where:
 
 - $F_g$: Gravitational force
 - $G$: Gravitational constant
@@ -51,8 +55,15 @@ In this simulation:
 
 The gravitational force is a vector pointing from the rocket towards the attractor. Its components along the x and y axes are calculated using:
 
-$F_{gx} = F_g \frac{\Delta x}{r}$
-$F_{gy} = F_g \frac{\Delta y}{r}$
+$$
+F_{gx} = F_g \frac{\Delta x}{r}
+$$
+
+and
+
+$$
+F_{gy} = F_g \frac{\Delta y}{r}
+$$
 
 Where:
 
@@ -67,8 +78,15 @@ The rocket's thrust is modeled as an additional force that can be applied in the
 
 The thrust force components are calculated using:
 
-$F_{tx} = F_t \cos(\theta)$
-$F_{ty} = F_t \sin(\theta)$
+$$
+F_{tx} = F_t \cos(\theta)
+$$
+
+and
+
+$$
+F_{ty} = F_t \sin(\theta)
+$$
 
 Where:
 
@@ -94,7 +112,11 @@ The simulation uses the Euler method, a simple numerical technique for solving o
 
 1. **Velocity Update**:
 
-$\vec{v}_{\text{new}} = \vec{v}_{\text{old}} + \vec{a} \cdot \Delta t$
+$$
+\vec{v}_{\text{new}} = \vec{v}_{\text{old}} + \vec{a} \cdot \Delta t
+$$
+
+Where:
 
 - $\vec{v}_{\text{new}}$: Updated velocity vector.
 - $\vec{v}_{\text{old}}$: Previous velocity vector.
@@ -103,7 +125,11 @@ $\vec{v}_{\text{new}} = \vec{v}_{\text{old}} + \vec{a} \cdot \Delta t$
 
 2. **Position Update**:
 
-$\vec{r}_{\text{new}} = \vec{r}_{\text{old}} + \vec{v}_{\text{new}} \cdot \Delta t$
+$$
+\vec{r}_{\text{new}} = \vec{r}_{\text{old}} + \vec{v}_{\text{new}} \cdot \Delta t
+$$
+
+Where:
 
 - $\vec{r}_{\text{new}}$: Updated position vector.
 - $\vec{r}_{\text{old}}$: Previous position vector.
@@ -207,36 +233,42 @@ For each attractor:
 
 1. **Compute Distance Components**:
 
-   $\Delta x = x_{\text{attractor}} - x_{\text{rocket}}$
-   $\Delta y = y_{\text{attractor}} - y_{\text{rocket}}$
-   <br>
+   $$
+   \Delta x = x_{\text{attractor}} - x_{\text{rocket}} \\
+   \Delta y = y_{\text{attractor}} - y_{\text{rocket}}
+   $$
 
 2. **Compute Distance and Avoid Division by Zero**:
 
-   $r^2 = (\Delta x)^2 + (\Delta y)^2 + \epsilon$
+   $$
+   r^2 = (\Delta x)^2 + (\Delta y)^2 + \epsilon
+   $$
 
-   where:
-
-   $\epsilon$ is a small constant (e.g., 0.0001) to prevent division by zero when \( r \) is very small.
+   Where $\epsilon$ is a small constant (e.g., 0.0001) to prevent division by zero when \( r \) is very small.
    <br>
 
 3. **Compute Gravitational Force Magnitude**:
 
-   $F_g = \frac{G}{r^2}$
+   $$
+   F_g = \frac{G}{r^2}
+   $$
 
    where the masses are incorporated into $G$ for simplification.
     <br>
 
 4. **Compute Force Components**:
 
-   $F_{gx} = F_g \frac{\Delta x}{r}$
-   $F_{gy} = F_g \frac{\Delta y}{r}$
-    <br>
+   $$
+   F_{gx} = F_g \frac{\Delta x}{r}\\
+   F_{gy} = F_g \frac{\Delta y}{r}
+   $$
 
 5. **Sum Forces from All Attractors**:
 
-   $F_{\text{total}_x} = \sum F_{gx}$
-   $F_{\text{total}_y} = \sum F_{gy}$
+   $$
+   F_{\text{total}_x} = \sum F_{gx} \\
+   F_{\text{total}_y} = \sum F_{gy}
+   $$
 
 ### Thrust Force Calculation
 
@@ -250,14 +282,20 @@ When thrusters are active:
 
 2. **Compute Thrust Force Components**:
 
-   $F_{tx} = F_t \cos(\theta)$
-   $F_{ty} = F_t \sin(\theta)$
+   $$
+   F_{tx} = F_t \cos(\theta) \\
+   F_{ty} = F_t \sin(\theta)
+   $$
+
+    where $\theta$ is the rocket's facing angle in radians.
     <br>
 
 3. **Add to Total Forces**:
 
-   $F_{\text{total}_x} += F_{tx}$
-   $F_{\text{total}_y} += F_{ty}$
+   $$
+   F_{\text{total}_x} += F_{tx} \\
+   F_{\text{total}_y} += F_{ty}
+   $$
 
 ### Acceleration and Velocity Update
 
@@ -265,19 +303,25 @@ Using Newton's second law ($F = ma$) and assuming unit mass ($m = 1$):
 
 1. **Compute Acceleration**:
 
-   $a_x = F_{\text{total}_x}$
-   $a_y = F_{\text{total}_y}$
-    <br>
+   $$
+   a_x = F_{\text{total}_x} \\
+   a_y = F_{\text{total}_y}
+   $$
 
 2. **Update Velocity (Euler Method)**:
-   $v_x = v_x + a_x \cdot \Delta t$
-   $v_y = v_y + a_y \cdot \Delta t$
+   $$
+   v_x = v_x + a_x \cdot \Delta t \\
+   v_y = v_y + a_y \cdot \Delta t
+   $$
 
 ### Position Update
 
 1. **Update Position (Euler Method)**:
-   $x = x + v_x \cdot \Delta t$
-   $y = y + v_y \cdot \Delta t$
+   
+   $$
+   x = x + v_x \cdot \Delta t \\
+   y = y + v_y \cdot \Delta t
+   $$
 
 ### Rotation Update
 
