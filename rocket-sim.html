@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>2D Rocket Simulation with Background Stars</title>
+    <style>
+        /* CSS styles */
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        #controls input {
+            width: 50px;
+            margin-right: 5px;
+        }
+        #controls button {
+            margin-left: 5px;
+            margin-top: 5px;
+        }
+        #controls label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        /* Modal popup styles */
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+        #modalContent {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            text-align: center;
+        }
+        #closeModalButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #closeModalButton:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div id="controls">
+    <label>
+        Thruster Acceleration:
+        <input type="number" id="thrusterAccelerationInput" value="0.5" step="0.1">
+    </label>
+    <label>
+        Rotation Speed:
+        <input type="number" id="rotationSpeedInput" value="0.05" step="0.01">
+    </label>
+    <br>
+    <button id="resetButton">Reset</button>
+    <button id="accelerateForwardButton">Accelerate Forward: Off</button>
+    <button id="accelerateBackwardButton">Accelerate Backward: Off</button>
+    <button id="rotateLeftButton">Rotate Left: Off</button>
+    <button id="rotateRightButton">Rotate Right: Off</button>
+</div>
+
+<canvas id="simulationCanvas"></canvas>
+
+<!-- Modal Popup -->
+<div id="modal">
+    <div id="modalContent">
+        <h2>2D Rocket Simulation</h2>
+        <p>
+            This simulation models the motion of a rocket in a two-dimensional space under the influence of gravitational attractors. The rocket is subject to Newtonian mechanics, where the gravitational force follows the inverse-square law. You can control the rocket's acceleration and rotation using the thrusters:
+        </p>
+        <ul style="text-align: left;">
+            <li><strong>Thruster Acceleration:</strong> Controls the magnitude of acceleration when thrusters are activated.</li>
+            <li><strong>Rotation Speed:</strong> Controls how quickly the rocket rotates when using rotational thrusters.</li>
+        </ul>
+        <p>
+            Use the controls to navigate the rocket through the gravitational fields. The rocket's motion is determined by the net forces acting upon it, including gravitational attraction and thrust.
+        </p>
+        <button id="closeModalButton">Start Simulation</button>
+    </div>
+</div>
+
+<script>
+    // Get the canvas and context
+    const canvas = document.getElementById('simulationCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Get control elements
+    const thrusterAccelerationInput = document.getElementById('thrusterAccelerationInput');
+    const rotationSpeedInput = document.getElementById('rotationSpeedInput');
+
+    const resetButton = document.getElementById('resetButton');
+    const accelerateForwardButton = document.getElementById('accelerateForwardButton');
+    const accelerateBackwardButton = document.getElementById('accelerateBackwardButton');
+    const rotateLeftButton = document.getElementById('rotateLeftButton');
+    const rotateRightButton = document.getElementById('rotateRightButton');
+
+    // Get modal elements
+    const modal = document.getElementById('modal');
+    const closeModalButton = document.getElementById('closeModalButton');
+
+    // Close modal function
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    // Attach event listener to the close button
+    closeModalButton.addEventListener('click', closeModal);
+
+    // Resize the canvas to fill the window
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Define the camera (viewport)
+    const camera = {
+        x: 0,
+        y: 0
+    };
+
+    // Define stationary attractors in world coordinates
+    const attractors = [
+        { x: -200, y: 0 },
+        { x: 0, y: -200 },
+        { x: 200, y: 0 },
+        { x: 0, y: 200 }
+    ];
+
+    // Define the moving object (rocket) in world coordinates
+    const particle = {
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        angle: 0 // Facing direction in radians
+    };
+
+    // Store the trajectory points in world coordinates
+    let trajectory = [];
+
+    // Simulation parameters
+    const G = 1000; // Gravitational constant (adjust for strength)
+    const dt = 0.1; // Time step
+
+    // Thruster and rotation states
+    let accelerateForwardOn = false;
+    let accelerateBackwardOn = false;
+    let rotateLeftOn = false;
+    let rotateRightOn = false;
+
+    // Background stars
+    let stars = [];
+
+    // Generate background stars
+    function generateStars(numStars, areaSize) {
+        stars = [];
+        for (let i = 0; i < numStars; i++) {
+            const x = (Math.random() - 0.5) * areaSize;
+            const y = (Math.random() - 0.5) * areaSize;
+            const brightness = Math.random() * 0.5 + 0.5; // Brightness between 0.5 and 1
+            stars.push({ x, y, brightness });
+        }
+    }
+
+    // Generate stars within a larger area to cover panning
+    const starAreaSize = 5000; // Adjust as needed
+    generateStars(500, starAreaSize);
+
+    // Reset function
+    function resetParticle() {
+        // Reset particle properties to start at the world origin
+        particle.x = 0;
+        particle.y = 0;
+        particle.vx = 0;
+        particle.vy = 0;
+
+        // Set initial facing angle to 0 (facing right)
+        particle.angle = 0;
+
+        // Reset camera position to center on the rocket
+        camera.x = particle.x - canvas.width / 2;
+        camera.y = particle.y - canvas.height / 2;
+
+        // Clear trajectory
+        trajectory = [];
+    }
+
+    // Toggle accelerate forward function
+    function toggleAccelerateForward() {
+        accelerateForwardOn = !accelerateForwardOn;
+        accelerateForwardButton.textContent = 'Accelerate Forward: ' + (accelerateForwardOn ? 'On' : 'Off');
+    }
+
+    // Toggle accelerate backward function
+    function toggleAccelerateBackward() {
+        accelerateBackwardOn = !accelerateBackwardOn;
+        accelerateBackwardButton.textContent = 'Accelerate Backward: ' + (accelerateBackwardOn ? 'On' : 'Off');
+    }
+
+    // Toggle rotate left function
+    function toggleRotateLeft() {
+        rotateLeftOn = !rotateLeftOn;
+        rotateLeftButton.textContent = 'Rotate Left: ' + (rotateLeftOn ? 'On' : 'Off');
+    }
+
+    // Toggle rotate right function
+    function toggleRotateRight() {
+        rotateRightOn = !rotateRightOn;
+        rotateRightButton.textContent = 'Rotate Right: ' + (rotateRightOn ? 'On' : 'Off');
+    }
+
+    // Attach event listeners
+    resetButton.addEventListener('click', resetParticle);
+    accelerateForwardButton.addEventListener('click', toggleAccelerateForward);
+    accelerateBackwardButton.addEventListener('click', toggleAccelerateBackward);
+    rotateLeftButton.addEventListener('click', toggleRotateLeft);
+    rotateRightButton.addEventListener('click', toggleRotateRight);
+
+    // Initialize particle and camera for the first time
+    resetParticle();
+
+    function update() {
+        // Parse thruster acceleration and rotation speed from input fields
+        const thrusterAcceleration = parseFloat(thrusterAccelerationInput.value) || 0;
+        const rotationSpeed = parseFloat(rotationSpeedInput.value) || 0;
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update camera position to center on the particle
+        camera.x = particle.x - canvas.width / 2;
+        camera.y = particle.y - canvas.height / 2;
+
+        // Draw background stars
+        ctx.fillStyle = 'white';
+        for (let star of stars) {
+            let screenX = star.x - camera.x * 0.5; // Parallax effect
+            let screenY = star.y - camera.y * 0.5;
+
+            // Wrap stars around if they go off-screen (optional)
+            screenX = ((screenX % canvas.width) + canvas.width) % canvas.width;
+            screenY = ((screenY % canvas.height) + canvas.height) % canvas.height;
+
+            ctx.globalAlpha = star.brightness;
+            ctx.fillRect(screenX, screenY, 2, 2);
+        }
+        ctx.globalAlpha = 1; // Reset alpha
+
+        // Rotate the rocket
+        if (rotateLeftOn) particle.angle -= rotationSpeed;
+        if (rotateRightOn) particle.angle += rotationSpeed;
+
+        // Calculate the net force on the particle
+        let fx = 0;
+        let fy = 0;
+        for (let attractor of attractors) {
+            let dx = attractor.x - particle.x;
+            let dy = attractor.y - particle.y;
+            let distanceSquared = dx * dx + dy * dy + 0.0001; // Prevent division by zero
+            let distance = Math.sqrt(distanceSquared);
+
+            let force = G / distanceSquared; // Force magnitude
+
+            fx += (force * dx) / distance; // Force components
+            fy += (force * dy) / distance;
+        }
+
+        // Apply thruster acceleration if thrusters are on
+        if (accelerateForwardOn) {
+            // Accelerate in the facing direction
+            fx += thrusterAcceleration * Math.cos(particle.angle);
+            fy += thrusterAcceleration * Math.sin(particle.angle);
+        }
+
+        if (accelerateBackwardOn) {
+            // Accelerate opposite to the facing direction
+            fx -= thrusterAcceleration * Math.cos(particle.angle);
+            fy -= thrusterAcceleration * Math.sin(particle.angle);
+        }
+
+        // Update velocity
+        particle.vx += fx * dt;
+        particle.vy += fy * dt;
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Add current position to trajectory
+        trajectory.push({ x: particle.x, y: particle.y });
+
+        // Limit the trajectory length to prevent memory issues
+        if (trajectory.length > 10000) {
+            trajectory.shift();
+        }
+
+        // Draw the trajectory
+        ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        if (trajectory.length > 0) {
+            ctx.moveTo(trajectory[0].x - camera.x, trajectory[0].y - camera.y);
+            for (let i = 1; i < trajectory.length; i++) {
+                ctx.lineTo(trajectory[i].x - camera.x, trajectory[i].y - camera.y);
+            }
+            ctx.stroke();
+        }
+
+        // Draw the attractors
+        ctx.fillStyle = 'yellow';
+        for (let attractor of attractors) {
+            let screenX = attractor.x - camera.x;
+            let screenY = attractor.y - camera.y;
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Draw the particle (rocket)
+        ctx.save();
+        ctx.translate(particle.x - camera.x, particle.y - camera.y);
+        ctx.rotate(particle.angle);
+
+        // Draw rocket body
+        ctx.fillStyle = 'cyan';
+        ctx.beginPath();
+        ctx.moveTo(10, 0);
+        ctx.lineTo(-10, -7);
+        ctx.lineTo(-10, 7);
+        ctx.closePath();
+        ctx.fill();
+
+        // Draw thrust flames
+        if (accelerateForwardOn) {
+            ctx.strokeStyle = 'orange';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-10, 0);
+            ctx.lineTo(-20, 0);
+            ctx.stroke();
+        }
+
+        if (accelerateBackwardOn) {
+            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(10, 0);
+            ctx.lineTo(20, 0);
+            ctx.stroke();
+        }
+
+        ctx.restore();
+
+        // Request the next frame
+        requestAnimationFrame(update);
+    }
+
+    // Start the simulation
+    update();
+</script>
+
+</body>
+</html>
