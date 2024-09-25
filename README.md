@@ -288,7 +288,7 @@ Using Newton's second law ($F = ma$) and assuming unit mass ($m = 1$):
 
 ### Position Update
 
-1. **Update Position (Euler Method)**:
+**Update Position (Euler Method)**:
    
    $`x = x + v_x \cdot \Delta t`$
    
@@ -298,8 +298,7 @@ Using Newton's second law ($F = ma$) and assuming unit mass ($m = 1$):
 
 When rotation is active:
 
-1. **Update Facing Angle**:
-    <br>
+**Update Facing Angle**:
 
    - Rotate Left:
 
