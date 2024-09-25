@@ -34,16 +34,16 @@ In the simulation, the rocket's acceleration results from the combined forces of
 
 The gravitational force between two masses is given by Newton's law of universal gravitation:
 
-\[ F_g = G \frac{m_1 m_2}{r^2} \]
+$F_g = G \frac{m_1 m_2}{r^2}$
 
-- \( F_g \): Gravitational force
-- \( G \): Gravitational constant
-- \( m_1, m_2 \): Masses of the two objects
-- \( r \): Distance between the centers of the two masses
+- $F_g$: Gravitational force
+- $G$: Gravitational constant
+- $m_1, m_2$: Masses of the two objects
+- $r$: Distance between the centers of the two masses
 
 In this simulation:
 
-- The attractors have a fixed gravitational influence, and their masses are implicit in the gravitational constant \( G \).
+- The attractors have a fixed gravitational influence, and their masses are implicit in the gravitational constant $G$.
 - The rocket's mass is considered constant and normalized for simplicity.
 - The gravitational force is calculated for each attractor and summed to determine the net gravitational force on the rocket.
 
@@ -51,11 +51,13 @@ In this simulation:
 
 The gravitational force is a vector pointing from the rocket towards the attractor. Its components along the x and y axes are calculated using:
 
-\[ F_{gx} = F_g \frac{\Delta x}{r} \]
-\[ F_{gy} = F_g \frac{\Delta y}{r} \]
+$F_{gx} = F_g \frac{\Delta x}{r}$
+$F_{gy} = F_g \frac{\Delta y}{r}$
 
-- \( \Delta x, \Delta y \): Differences in x and y coordinates between the attractor and the rocket.
-- \( r \): Distance between the rocket and the attractor.
+Where:
+
+- $\Delta x, \Delta y$: Differences in x and y coordinates between the attractor and the rocket.
+- $r$: Distance between the rocket and the attractor.
 
 ### Rocket Thrust
 
@@ -65,11 +67,13 @@ The rocket's thrust is modeled as an additional force that can be applied in the
 
 The thrust force components are calculated using:
 
-\[ F_{tx} = F_t \cos(\theta) \]
-\[ F_{ty} = F_t \sin(\theta) \]
+$F_{tx} = F_t \cos(\theta)$
+$F_{ty} = F_t \sin(\theta)$
 
-- \( F_t \): Magnitude of the thrust force (controlled by the user).
-- \( \theta \): The rocket's facing angle in radians.
+Where:
+
+- $F_t$: Magnitude of the thrust force (controlled by the user).
+- $\theta$: The rocket's facing angle in radians.
 
 ### Rotational Dynamics
 
@@ -90,23 +94,23 @@ The simulation uses the Euler method, a simple numerical technique for solving o
 
 1. **Velocity Update**:
 
-\[ \vec{v}_{\text{new}} = \vec{v}_{\text{old}} + \vec{a} \cdot \Delta t \]
+$\vec{v}_{\text{new}} = \vec{v}_{\text{old}} + \vec{a} \cdot \Delta t$
 
-- \( \vec{v}_{\text{new}} \): Updated velocity vector.
-- \( \vec{v}_{\text{old}} \): Previous velocity vector.
-- \( \vec{a} \): Acceleration vector (from net forces).
-- \( \Delta t \): Time step duration.
+- $\vec{v}_{\text{new}}$: Updated velocity vector.
+- $\vec{v}_{\text{old}}$: Previous velocity vector.
+- $\vec{a}$: Acceleration vector (from net forces).
+- $\Delta t$: Time step duration.
 
 2. **Position Update**:
 
-\[ \vec{r}_{\text{new}} = \vec{r}_{\text{old}} + \vec{v}_{\text{new}} \cdot \Delta t \]
+$\vec{r}_{\text{new}} = \vec{r}_{\text{old}} + \vec{v}_{\text{new}} \cdot \Delta t$
 
-- \( \vec{r}_{\text{new}} \): Updated position vector.
-- \( \vec{r}_{\text{old}} \): Previous position vector.
+- $\vec{r}_{\text{new}}$: Updated position vector.
+- $\vec{r}_{\text{old}}$: Previous position vector.
 
 #### Implementation in Code
 
-- **Time Step (\( \Delta t \))**: A constant value set in the simulation (e.g., 0.1 seconds).
+- **Time Step ($\Delta t$)**: A constant value set in the simulation (e.g., 0.1 seconds).
 - **Acceleration Calculation**: The net force divided by the rocket's mass (mass is normalized to 1 for simplicity).
 - **Incremental Updates**: Velocity and position are updated each frame using the Euler method.
 
@@ -203,30 +207,36 @@ For each attractor:
 
 1. **Compute Distance Components**:
 
-   \[ \Delta x = x_{\text{attractor}} - x_{\text{rocket}} \]
-   \[ \Delta y = y_{\text{attractor}} - y_{\text{rocket}} \]
+   $\Delta x = x_{\text{attractor}} - x_{\text{rocket}}$
+   $\Delta y = y_{\text{attractor}} - y_{\text{rocket}}$
+   <br>
 
 2. **Compute Distance and Avoid Division by Zero**:
 
-   \[ r^2 = (\Delta x)^2 + (\Delta y)^2 + \epsilon \]
+   $r^2 = (\Delta x)^2 + (\Delta y)^2 + \epsilon$
 
-   - \( \epsilon \): A small constant (e.g., 0.0001) to prevent division by zero when \( r \) is very small.
+   where:
+
+   $\epsilon$ is a small constant (e.g., 0.0001) to prevent division by zero when \( r \) is very small.
+   <br>
 
 3. **Compute Gravitational Force Magnitude**:
 
-   \[ F_g = \frac{G}{r^2} \]
+   $F_g = \frac{G}{r^2}$
 
-   - Masses are incorporated into \( G \) for simplification.
+   where the masses are incorporated into $G$ for simplification.
+    <br>
 
 4. **Compute Force Components**:
 
-   \[ F_{gx} = F_g \frac{\Delta x}{r} \]
-   \[ F_{gy} = F_g \frac{\Delta y}{r} \]
+   $F_{gx} = F_g \frac{\Delta x}{r}$
+   $F_{gy} = F_g \frac{\Delta y}{r}$
+    <br>
 
 5. **Sum Forces from All Attractors**:
 
-   \[ F_{\text{total}_x} = \sum F_{gx} \]
-   \[ F_{\text{total}_y} = \sum F_{gy} \]
+   $F_{\text{total}_x} = \sum F_{gx}$
+   $F_{\text{total}_y} = \sum F_{gy}$
 
 ### Thrust Force Calculation
 
@@ -234,53 +244,56 @@ When thrusters are active:
 
 1. **Compute Thrust Force Magnitude**:
 
-   - Forward Thrust: \( F_t = \text{thrusterAcceleration} \)
-   - Backward Thrust: \( F_t = -\text{thrusterAcceleration} \)
+   - Forward Thrust: $F_t = \text{thrusterAcceleration}$
+   - Backward Thrust: $F_t = -\text{thrusterAcceleration}$
+    <br>
 
 2. **Compute Thrust Force Components**:
 
-   \[ F_{tx} = F_t \cos(\theta) \]
-   \[ F_{ty} = F_t \sin(\theta) \]
+   $F_{tx} = F_t \cos(\theta)$
+   $F_{ty} = F_t \sin(\theta)$
+    <br>
 
 3. **Add to Total Forces**:
 
-   \[ F_{\text{total}_x} += F_{tx} \]
-   \[ F_{\text{total}_y} += F_{ty} \]
+   $F_{\text{total}_x} += F_{tx}$
+   $F_{\text{total}_y} += F_{ty}$
 
 ### Acceleration and Velocity Update
 
-Using Newton's second law (\( F = ma \)) and assuming unit mass (\( m = 1 \)):
+Using Newton's second law ($F = ma$) and assuming unit mass ($m = 1$):
 
 1. **Compute Acceleration**:
 
-   \[ a_x = F_{\text{total}_x} \]
-   \[ a_y = F_{\text{total}_y} \]
+   $a_x = F_{\text{total}_x}$
+   $a_y = F_{\text{total}_y}$
+    <br>
 
 2. **Update Velocity (Euler Method)**:
-
-   \[ v_x = v_x + a_x \cdot \Delta t \]
-   \[ v_y = v_y + a_y \cdot \Delta t \]
+   $v_x = v_x + a_x \cdot \Delta t$
+   $v_y = v_y + a_y \cdot \Delta t$
 
 ### Position Update
 
 1. **Update Position (Euler Method)**:
-
-   \[ x = x + v_x \cdot \Delta t \]
-   \[ y = y + v_y \cdot \Delta t \]
+   $x = x + v_x \cdot \Delta t$
+   $y = y + v_y \cdot \Delta t$
 
 ### Rotation Update
 
 When rotation is active:
 
 1. **Update Facing Angle**:
+    <br>
 
    - Rotate Left:
 
-     \[ \theta = \theta - \text{rotationSpeed} \]
+        $\theta = \theta - \text{rotationSpeed}$
+        <br>
 
    - Rotate Right:
 
-     \[ \theta = \theta + \text{rotationSpeed} \]
+        $\theta = \theta + \text{rotationSpeed}$
 
 ---
 
