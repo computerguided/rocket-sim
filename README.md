@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document provides a comprehensive overview of the 2D Rocket Simulation program implemented in HTML/CS/JS (just download [rocket-sim.html](./rocket-sim.html) and open the file in your browser). The simulation models the motion of a rocket navigating through space under the influence of gravitational attractors. It incorporates principles from Newtonian mechanics, simulating gravitational forces, rocket thrust, and rotational dynamics. The program uses numerical methods to solve the equations of motion and provides an interactive interface for users to control the rocket's movement.
+This document provides a comprehensive overview of the 2D Rocket Simulation program implemented in HTML/CS/JS (just download [rocket-sim.html]([./rocket-sim.html](https://raw.githubusercontent.com/computerguided/rocket-sim/refs/heads/main/rocket-sim.html)) and open the file in your browser). The simulation models the motion of a rocket navigating through space under the influence of gravitational attractors. It incorporates principles from Newtonian mechanics, simulating gravitational forces, rocket thrust, and rotational dynamics. The program uses numerical methods to solve the equations of motion and provides an interactive interface for users to control the rocket's movement.
 
 ---
 
