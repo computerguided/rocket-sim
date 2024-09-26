@@ -172,7 +172,7 @@ The program is structured into several key components:
 
 ### Functions
 
-- **`resetParticle()`**:
+- **`resetRocket()`**:
   - Resets the rocket's state and recenters the camera.
 
 - **`generateStars(numStars, areaSize)`**:
@@ -322,23 +322,24 @@ When rotation is active:
 
 ## Possible Extensions and Experiments
 
-- **Implementing Drag or Resistance**:
-  - Add a damping force proportional to velocity to simulate resistance.
-
 - **Variable Mass**:
-  - Simulate fuel consumption by decreasing the rocket's mass over time.
-
-- **Gravity from Rocket to Attractors**:
-  - Make the rocket's mass significant, allowing it to exert gravitational force on the attractors.
-
-- **Multi-stage Rockets**:
-  - Implement stages with different masses and thrust capabilities.
+  Simulate fuel consumption by decreasing the rocket's mass over time.
+  <br>
 
 - **Orbit Prediction**:
-  - Calculate and display predicted orbital paths based on current velocity and position.
+  Calculate and display predicted orbital paths based on current velocity and position.
+  <br>
 
-- **Relativistic Effects**:
-  - Introduce concepts from special relativity at high velocities.
+- **Navigation Challenges**:
+  Create obstacles or targets for the rocket to navigate around or towards.
+  <br>
+
+- **Navigation Computer**:
+  Implement an autopilot system that can guide the rocket to a specific destination.
+  <br>
+
+- **Flight Planning**:
+  Allow users to set waypoints for the rocket to follow, creating complex flight paths.
 
 ---
 

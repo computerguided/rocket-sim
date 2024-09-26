@@ -197,7 +197,7 @@
     generateStars(500, starAreaSize);
 
     // Reset function
-    function resetParticle() {
+    function resetRocket() {
         // Reset particle properties to start at the world origin
         particle.x = 0;
         particle.y = 0;
@@ -240,14 +240,14 @@
     }
 
     // Attach event listeners
-    resetButton.addEventListener('click', resetParticle);
+    resetButton.addEventListener('click', resetRocket);
     accelerateForwardButton.addEventListener('click', toggleAccelerateForward);
     accelerateBackwardButton.addEventListener('click', toggleAccelerateBackward);
     rotateLeftButton.addEventListener('click', toggleRotateLeft);
     rotateRightButton.addEventListener('click', toggleRotateRight);
 
     // Initialize particle and camera for the first time
-    resetParticle();
+    resetRocket();
 
     function update() {
         // Parse thruster acceleration and rotation speed from input fields
