@@ -6,7 +6,7 @@ This document provides a comprehensive overview of the 2D Rocket Simulation prog
 
 **Click [here](https://htmlpreview.github.io/?https://raw.githubusercontent.com/computerguided/rocket-sim/refs/heads/main/rocket-sim.html) to run the rocket simulation in your browser.**
 
-**Listen to a podcast about rocket simulation by clicking play below.**
+**Listen to a podcast about this rocket simulation program by clicking play below (unmute audio).**
 
 https://github.com/user-attachments/assets/5aa2a8b0-a60c-443f-be1d-52cddf49ed7c
 
