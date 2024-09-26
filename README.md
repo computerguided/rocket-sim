@@ -70,7 +70,7 @@ Where:
 
 ### Rocket Thrust
 
-The rocket's thrust is modeled as an additional force that can be applied in the direction the rocket is facing (forward thrust) or opposite to it (backward thrust).
+The rocket's thrust is modeled as an additional force that can be applied in the direction the rocket is facing.
 
 #### Thrust Force Components
 
