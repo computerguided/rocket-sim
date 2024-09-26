@@ -31,7 +31,9 @@ The simulation uses a camera system that pans to follow the rocket, creating the
 The simulation is based on Newton's three laws of motion:
 
 1. **First Law (Inertia)**: An object remains at rest or in uniform motion unless acted upon by a net external force.
+   
 2. **Second Law ($F=ma$)**: The acceleration of an object is directly proportional to the net force acting upon it and inversely proportional to its mass.
+
 3. **Third Law (Action-Reaction)**: For every action, there is an equal and opposite reaction.
 
 In the simulation, the rocket's acceleration results from the combined forces of gravity and thrust.
