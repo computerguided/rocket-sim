@@ -230,7 +230,7 @@ For each attractor:
 
    $`r^2 = (\Delta x)^2 + (\Delta y)^2 + \epsilon`$
 
-   Where $\epsilon$ is a small constant (e.g., 0.0001) to prevent division by zero when \( r \) is very small.
+   Where $\epsilon$ is a small constant (e.g., 0.0001) to prevent division by zero when $r$ is very small.
    <br>
 
 4. **Compute Gravitational Force Magnitude**:
