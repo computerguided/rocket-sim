@@ -81,8 +81,7 @@
     </label>
     <br>
     <button id="resetButton">Reset</button>
-    <button id="accelerateForwardButton">Accelerate Forward: Off</button>
-    <button id="accelerateBackwardButton">Accelerate Backward: Off</button>
+    <button id="thrustersOnButton">Thrusters: Off</button>
     <button id="rotateLeftButton">Rotate Left: Off</button>
     <button id="rotateRightButton">Rotate Right: Off</button>
 </div>
@@ -117,8 +116,7 @@
     const rotationSpeedInput = document.getElementById('rotationSpeedInput');
 
     const resetButton = document.getElementById('resetButton');
-    const accelerateForwardButton = document.getElementById('accelerateForwardButton');
-    const accelerateBackwardButton = document.getElementById('accelerateBackwardButton');
+    const thrustersOnButton = document.getElementById('thrustersOnButton');
     const rotateLeftButton = document.getElementById('rotateLeftButton');
     const rotateRightButton = document.getElementById('rotateRightButton');
 
@@ -173,7 +171,7 @@
     const dt = 0.1; // Time step
 
     // Thruster and rotation states
-    let accelerateForwardOn = false;
+    let thrustersOn = false;
     let accelerateBackwardOn = false;
     let rotateLeftOn = false;
     let rotateRightOn = false;
@@ -215,16 +213,10 @@
         trajectory = [];
     }
 
-    // Toggle accelerate forward function
-    function toggleAccelerateForward() {
-        accelerateForwardOn = !accelerateForwardOn;
-        accelerateForwardButton.textContent = 'Accelerate Forward: ' + (accelerateForwardOn ? 'On' : 'Off');
-    }
-
-    // Toggle accelerate backward function
-    function toggleAccelerateBackward() {
-        accelerateBackwardOn = !accelerateBackwardOn;
-        accelerateBackwardButton.textContent = 'Accelerate Backward: ' + (accelerateBackwardOn ? 'On' : 'Off');
+    // Toggle thrusters function
+    function toggleThrusters() {
+        thrustersOn = !thrustersOn;
+        thrustersOnButton.textContent = 'Thrusters: ' + (thrustersOn ? 'On' : 'Off');
     }
 
     // Toggle rotate left function
@@ -241,8 +233,7 @@
 
     // Attach event listeners
     resetButton.addEventListener('click', resetRocket);
-    accelerateForwardButton.addEventListener('click', toggleAccelerateForward);
-    accelerateBackwardButton.addEventListener('click', toggleAccelerateBackward);
+    thrustersOnButton.addEventListener('click', toggleThrusters);
     rotateLeftButton.addEventListener('click', toggleRotateLeft);
     rotateRightButton.addEventListener('click', toggleRotateRight);
 
@@ -296,16 +287,10 @@
         }
 
         // Apply thruster acceleration if thrusters are on
-        if (accelerateForwardOn) {
+        if (thrustersOn) {
             // Accelerate in the facing direction
             fx += thrusterAcceleration * Math.cos(particle.angle);
             fy += thrusterAcceleration * Math.sin(particle.angle);
-        }
-
-        if (accelerateBackwardOn) {
-            // Accelerate opposite to the facing direction
-            fx -= thrusterAcceleration * Math.cos(particle.angle);
-            fy -= thrusterAcceleration * Math.sin(particle.angle);
         }
 
         // Update velocity
@@ -361,7 +346,7 @@
         ctx.fill();
 
         // Draw thrust flames
-        if (accelerateForwardOn) {
+        if (thrustersOn) {
             ctx.strokeStyle = 'orange';
             ctx.lineWidth = 2;
             ctx.beginPath();
