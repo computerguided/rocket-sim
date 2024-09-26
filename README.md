@@ -201,8 +201,7 @@ The program is structured into several key components:
 
 - **Buttons**:
   - **Reset**: Resets the simulation to the initial state.
-  - **Accelerate Forward**: Toggles the forward thruster on or off.
-  - **Accelerate Backward**: Toggles the backward thruster on or off.
+  - **Thrusters**: Toggles the thruster on or off.
   - **Rotate Left**: Toggles left rotation on or off.
   - **Rotate Right**: Toggles right rotation on or off.
 
@@ -257,8 +256,7 @@ When thrusters are active:
 
 1. **Compute Thrust Force Magnitude**:
 
-   - Forward Thrust: $F_t = \text{thrusterAcceleration}$
-   - Backward Thrust: $F_t = -\text{thrusterAcceleration}$
+   Thrust: $F_t = \text{thrusterAcceleration}$
 
 2. **Compute Thrust Force Components**:
 
