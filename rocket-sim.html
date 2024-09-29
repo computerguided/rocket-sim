@@ -172,7 +172,6 @@
 
     // Thruster and rotation states
     let thrustersOn = false;
-    let accelerateBackwardOn = false;
     let rotateLeftOn = false;
     let rotateRightOn = false;
 
@@ -352,15 +351,6 @@
             ctx.beginPath();
             ctx.moveTo(-10, 0);
             ctx.lineTo(-20, 0);
-            ctx.stroke();
-        }
-
-        if (accelerateBackwardOn) {
-            ctx.strokeStyle = 'blue';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(10, 0);
-            ctx.lineTo(20, 0);
             ctx.stroke();
         }
 
