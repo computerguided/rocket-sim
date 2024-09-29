@@ -84,6 +84,7 @@
     <button id="thrustersOnButton">Thrusters: Off</button>
     <button id="rotateLeftButton">Rotate Left: Off</button>
     <button id="rotateRightButton">Rotate Right: Off</button>
+    <button id="togglePredictionButton">Toggle Prediction: Off</button>
 </div>
 
 <canvas id="simulationCanvas"></canvas>
@@ -119,6 +120,7 @@
     const thrustersOnButton = document.getElementById('thrustersOnButton');
     const rotateLeftButton = document.getElementById('rotateLeftButton');
     const rotateRightButton = document.getElementById('rotateRightButton');
+    const togglePredictionButton = document.getElementById('togglePredictionButton');
 
     // Get modal elements
     const modal = document.getElementById('modal');
@@ -175,6 +177,10 @@
     let rotateLeftOn = false;
     let rotateRightOn = false;
 
+    // Prediction toggle state
+    let showPrediction = false;
+    let predictedPath = [];
+
     // Background stars
     let stars = [];
 
@@ -230,12 +236,21 @@
         rotateRightButton.textContent = 'Rotate Right: ' + (rotateRightOn ? 'On' : 'Off');
     }
 
+    // Toggle prediction function
+    function togglePrediction() {
+    showPrediction = !showPrediction;
+    togglePredictionButton.textContent = 'Toggle Prediction: ' + (showPrediction ? 'On' : 'Off');
+
+    // Clear predicted path when toggling
+    predictedPath = [];
+    }
+
     // Attach event listeners
     resetButton.addEventListener('click', resetRocket);
     thrustersOnButton.addEventListener('click', toggleThrusters);
     rotateLeftButton.addEventListener('click', toggleRotateLeft);
     rotateRightButton.addEventListener('click', toggleRotateRight);
-
+    togglePredictionButton.addEventListener('click', togglePrediction);
     // Initialize particle and camera for the first time
     resetRocket();
 
@@ -320,6 +335,22 @@
             ctx.stroke();
         }
 
+        // Draw the predicted orbital path if enabled
+        if (showPrediction) {
+            calculatePredictedPath();
+            // Draw the predicted path
+            ctx.strokeStyle = 'rgba(255, 165, 0, 0.5)'; // Orange color
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            if (predictedPath.length > 0) {
+                ctx.moveTo(predictedPath[0].x - camera.x, predictedPath[0].y - camera.y);
+                for (let i = 1; i < predictedPath.length; i++) {
+                    ctx.lineTo(predictedPath[i].x - camera.x, predictedPath[i].y - camera.y);
+                }
+                ctx.stroke();
+            }
+        }
+
         // Draw the attractors
         ctx.fillStyle = 'yellow';
         for (let attractor of attractors) {
@@ -358,6 +389,58 @@
 
         // Request the next frame
         requestAnimationFrame(update);
+    }
+
+    // Function to calculate the predicted orbital path
+    function calculatePredictedPath() {
+        // Number of prediction steps and time step
+        const predictionSteps = 1000;
+        const predictionDt = dt;
+
+        // Start from the current state
+        let tempParticle = {
+            x: particle.x,
+            y: particle.y,
+            vx: particle.vx,
+            vy: particle.vy,
+            angle: particle.angle
+        };
+
+        // Clear previous predicted path
+        predictedPath = [];
+
+        // Simulation without user inputs (thrusters off, no rotation)
+        for (let i = 0; i < predictionSteps; i++) {
+            let fx = 0;
+            let fy = 0;
+            for (let attractor of attractors) {
+                let dx = attractor.x - tempParticle.x;
+                let dy = attractor.y - tempParticle.y;
+                let distanceSquared = dx * dx + dy * dy;
+
+                if (distanceSquared < 0.0001) {
+                    distanceSquared = 0.0001; // Prevent division by zero
+                }
+
+                let distance = Math.sqrt(distanceSquared);
+
+                let force = G / distanceSquared; // Force magnitude
+
+                fx += (force * dx) / distance; // Force components
+                fy += (force * dy) / distance;
+            }
+
+            // Update velocity
+            tempParticle.vx += fx * predictionDt;
+            tempParticle.vy += fy * predictionDt;
+
+            // Update position
+            tempParticle.x += tempParticle.vx * predictionDt;
+            tempParticle.y += tempParticle.vy * predictionDt;
+
+            // Add to predicted path
+            predictedPath.push({ x: tempParticle.x, y: tempParticle.y });
+        }
     }
 
     // Start the simulation
