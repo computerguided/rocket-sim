@@ -172,6 +172,7 @@
 
     // Thruster and rotation states
     let thrustersOn = false;
+    let accelerateBackwardOn = false;
     let rotateLeftOn = false;
     let rotateRightOn = false;
 
@@ -276,13 +277,7 @@
         for (let attractor of attractors) {
             let dx = attractor.x - particle.x;
             let dy = attractor.y - particle.y;
-            let distanceSquared = dx * dx + dy * dy;
-            
-            if (distanceSquared < 0.0001) 
-            {
-                distanceSquared = 0.0001; // Prevent division by zero
-            }
-            
+            let distanceSquared = dx * dx + dy * dy + 0.0001; // Prevent division by zero
             let distance = Math.sqrt(distanceSquared);
 
             let force = G / distanceSquared; // Force magnitude
